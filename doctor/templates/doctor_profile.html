@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Doctor Profile{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-4">Appointments</h1>
+    <p class="mb-4">Total Appointments: {{ appointments.count }}</p>
+
+    <div class="overflow-x-auto">
+        <table class="table-auto border-collapse border border-gray-400 w-full">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="px-4 py-2">Appointment ID</th>
+                    <th class="px-4 py-2">Patient</th>
+                    <th class="px-4 py-2">Doctor</th>
+                    <th class="px-4 py-2">Type</th>
+                    <th class="px-4 py-2">Status</th>
+                    <th class="px-4 py-2">Symptoms</th>
+                    <th class="px-4 py-2">Time</th>
+                    <th class="px-4 py-2">Cancellation</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appointment in appointments %}
+                <tr>
+                    <td class="border px-4 py-2">{{ appointment.id }}</td>
+                    <td class="border px-4 py-2">{{ appointment.patient }}</td>
+                    <td class="border px-4 py-2">{{ appointment.doctor }}</td>
+                    <td class="border px-4 py-2">{{ appointment.get_appointment_type_display }}</td>
+                    <td class="border px-4 py-2">
+                        <form action="{% url 'change_appointment_status' appointment.id %}" method="post">
+                            {% csrf_token %}
+                            <select name="status" id="status" class="border rounded">
+                                <option value="Pending" {% if appointment.appointment_status == 'Pending' %} selected 
+                                {% endif %}>
+                                    Pending
+                                </option>
+                                <option value="Running" {% if appointment.appointment_status == 'Running' %} selected 
+                                {% endif %}>
+                                    Running
+                                </option>
+                                <option value="Completed" {% if appointment.appointment_status == 'Completed' %} selected
+                                {% endif %}>
+                                    Completed
+                                </option>
+                            </select>
+                            <button type="submit" class="bg-blue-400 hover:bg-blue-500 text-white px-2 rounded">✓</button>
+                        </form>
+
+                    </td>
+                    <td class="border px-4 py-2">{{ appointment.symptoms }}</td>
+                    <td class="border px-4 py-2">{{ appointment.appointment_time }}</td>
+                    <td class="border px-4 py-2">{{ appointment.cancellation }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="border px-4 py-2">No appointments found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
