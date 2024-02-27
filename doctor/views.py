@@ -30,6 +30,17 @@ class DoctorLoginView(LoginView):
     template_name = 'doctor_login.html'
     redirect_authenticated_user = True
 
+    # check user is patient or doctor before logging in
+    def form_valid(self, form):
+        user = form.get_user()
+        if hasattr(user, 'doctor'):
+            login(self.request, user)
+            return redirect('doctor_profile')
+        else:
+            messages.error(
+                self.request, 'No doctor account found with the provided credentials. Try patient login instead.')
+            return redirect('doctor_login')
+
     def get_success_url(self):
         return reverse_lazy('doctor_profile')
 
@@ -43,6 +54,8 @@ class DoctorProfileView(LoginRequiredMixin, ListView):
         return Appointment.objects.filter(doctor=self.request.user.doctor)
 
 # doctor can change patient's appointment status
+
+
 def change_appointment_status(request, pk):
     appointment = get_object_or_404(Appointment, pk=pk)
     if request.method == "POST":

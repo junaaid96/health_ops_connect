@@ -18,64 +18,66 @@
     }
 </style>
 
-<nav
-    class="flex flex-col lg:flex-row items-center justify-between bg-blue-100 p-6 px-10"
->
+<nav class="flex flex-col lg:flex-row items-center justify-between bg-blue-100 p-6 px-10">
     <div class="flex items-center flex-shrink-0 text-blue-500 mr-6">
-        <span class="font-bold text-xl tracking-tight"
-            ><a href="{% url 'home' %}">HealthOPS Connect</a></span
-        >
+        <span class="font-bold text-xl tracking-tight"><a href="{% url 'home' %}">HealthOPS Connect</a></span>
     </div>
     <div class="block lg:hidden">
-        <button
-            id="menu-toggle"
-            class="px-3 py-2 border rounded text-white bg-blue-400 border-blue-500 hover:bg-blue-500"
-        >
-            <svg
-                class="fill-current h-3 w-3"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-            >
+        <button id="menu-toggle"
+            class="px-3 py-2 border rounded text-white bg-blue-400 border-blue-500 hover:bg-blue-500">
+            <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                 <title>Menu</title>
                 <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
             </svg>
         </button>
     </div>
 
-    <div
-        id="menu"
-        class="w-full hidden lg:flex lg:flex-col lg:items-center lg:w-auto px-10"
-    >
+    <div id="menu" class="w-full hidden lg:flex lg:flex-col lg:items-center lg:w-auto px-10">
         {% if request.user.is_authenticated %}
         <div class="text-md font-semibold lg:flex-grow"></div>
         <div class="lg:flex w-full items-center lg:gap-3">
+            <!-- Patient -->
+            {% if request.user.patient.user_type == 'Patient' %}
             <div class="text-blue-500 my-auto font-black lg:px-5">
-                Welcome, {{request.user.first_name}} {{request.user.last_name}}
+                {{request.user.username}} ({{request.user.patient.user_type}})
             </div>
             <div class="text-center lg:flex lg:gap-3">
-                <a
-                    href="{% url 'doctor_profile' %}"
-                    class="inline-block font-medium text-sm px-4 py-2 leading-none bg-blue-400 rounded text-white hover:border-transparent hover:bg-blue-500 mt-2 lg:mt-0"
-                    >Profile</a
-                >
-                <form method="post" action="{% url 'doctor_logout' %}">
+                <a href="{% url 'patient_profile' %}"
+                    class="inline-block font-medium text-sm px-4 py-2 leading-none bg-blue-400 rounded text-white hover:border-transparent hover:bg-blue-500 mt-2 lg:mt-0">Profile</a>
+                <form method="post" action="{% url 'patient_logout' %}">
                     {% csrf_token %}
                     <button
                         class="inline-block font-medium text-sm px-4 py-2 leading-none bg-blue-400 rounded text-white hover:border-transparent hover:bg-blue-500 mt-2 lg:mt-0"
-                        type="submit"
-                    >
+                        type="submit">
                         Logout
                     </button>
                 </form>
             </div>
+            {% else %}
+            <!-- Doctor -->
+            <div class="text-blue-500 my-auto font-black lg:px-5">
+                {{request.user.username}} ({{request.user.doctor.user_type}})
+            </div>
+            <div class="text-center lg:flex lg:gap-3">
+                <a href="{% url 'doctor_profile' %}"
+                    class="inline-block font-medium text-sm px-4 py-2 leading-none bg-blue-400 rounded text-white hover:border-transparent hover:bg-blue-500 mt-2 lg:mt-0">Profile</a>
+                <form method="post" action="{% url 'doctor_logout' %}">
+                    {% csrf_token %}
+                    <button
+                        class="inline-block font-medium text-sm px-4 py-2 leading-none bg-blue-400 rounded text-white hover:border-transparent hover:bg-blue-500 mt-2 lg:mt-0"
+                        type="submit">
+                        Logout
+                    </button>
+                </form>
+            </div>
+            {% endif %}
         </div>
         {% else %}
         <div class="text-md lg:flex-grow"></div>
         <div class="lg:flex w-full items-center text-center lg:gap-3">
             <div class="dropdown inline-block relative">
                 <button
-                    class="inline-block font-medium text-sm px-4 py-2 leading-none bg-blue-400 rounded text-white hover:border-transparent hover:bg-blue-500 mt-2 lg:mt-0"
-                >
+                    class="inline-block font-medium text-sm px-4 py-2 leading-none bg-blue-400 rounded text-white hover:border-transparent hover:bg-blue-500 mt-2 lg:mt-0">
                     Login ▼
                 </button>
                 <ul class="dropdown-menu absolute hidden text-blue-500">
@@ -90,21 +92,16 @@
             </div>
             <div class="dropdown inline-block relative">
                 <button
-                    class="inline-block font-medium text-sm px-4 py-2 leading-none bg-blue-400 rounded text-white hover:border-transparent hover:bg-blue-500 mt-2 lg:mt-0"
-                >
+                    class="inline-block font-medium text-sm px-4 py-2 leading-none bg-blue-400 rounded text-white hover:border-transparent hover:bg-blue-500 mt-2 lg:mt-0">
                     Register ▼
                 </button>
                 <ul class="dropdown-menu absolute hidden text-blue-500">
                     <li>
-                        <a class="hover:bg-blue-100" href="{% url 'patient_register' %}"
-                            >Patient Register</a
-                        >
+                        <a class="hover:bg-blue-100" href="{% url 'patient_register' %}">Patient Register</a>
                     </li>
                     <hr />
                     <li>
-                        <a class="hover:bg-blue-100" href="{% url 'doctor_register' %}"
-                            >Doctor Register</a
-                        >
+                        <a class="hover:bg-blue-100" href="{% url 'doctor_register' %}">Doctor Register</a>
                     </li>
                 </ul>
             </div>
