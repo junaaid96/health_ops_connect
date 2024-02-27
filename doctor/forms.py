@@ -12,7 +12,7 @@ class DoctorRegistrationForm(UserCreationForm):
     email = forms.EmailField(
         max_length=100, widget=forms.TextInput(attrs={'required': True}))
 
-    image = forms.ImageField(required=False)
+    image = forms.ImageField(required=True)
     designation = forms.ModelMultipleChoiceField(
         queryset=Designation.objects.all(), required=True)
     specialization = forms.ModelMultipleChoiceField(
@@ -24,26 +24,36 @@ class DoctorRegistrationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'username', 'email', 'password1',
+        fields = ['username', 'first_name', 'last_name', 'email', 'password1',
                   'password2', 'image', 'designation', 'specialization', 'available_time', 'fee', 'meet_link']
 
     def save(self, commit=True):
-        doctor = super().save(commit=False)
-        doctor.user_type = 'Doctor'
+        user = super().save(commit=False)
+        user.user_type = 'Doctor'
         if commit:
-            doctor.save()
+            user.save()
 
             image = self.cleaned_data.get('image')
-            designation = self.cleaned_data.get('designation')
-            specialization = self.cleaned_data.get('specialization')
-            available_time = self.cleaned_data.get('available_time')
             fee = self.cleaned_data.get('fee')
             meet_link = self.cleaned_data.get('meet_link')
 
-            doctor = Doctor.objects.create(
-                user=doctor, image=image, designation=designation, specialization=specialization, available_time=available_time, fee=fee, meet_link=meet_link)
+            doctor = Doctor.objects.create(user=user, image=image,
+                                           fee=fee, meet_link=meet_link)
 
-        return doctor
+            designation = self.cleaned_data.get('designation')
+            specialization = self.cleaned_data.get('specialization')
+            available_time = self.cleaned_data.get('available_time')
+
+            if designation:
+                doctor.designation.set(designation)
+
+            if specialization:
+                doctor.specialization.set(specialization)
+
+            if available_time:
+                doctor.available_time.set(available_time)
+
+        return user
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -53,4 +63,3 @@ class DoctorRegistrationForm(UserCreationForm):
                     'appearance-none block w-full bg-gray-100 border border-gray-300 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500'
                 )
             })
-

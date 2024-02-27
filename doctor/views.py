@@ -22,7 +22,7 @@ class DoctorRegistrationView(FormView):
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:  # check if user is logged in when trying to access the registration page
-            return redirect('profile')  # redirect to profile page
+            return redirect('doctor_profile')  # redirect to profile page
         return super().dispatch(request, *args, **kwargs)
 
 
