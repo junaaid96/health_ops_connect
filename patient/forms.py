@@ -2,7 +2,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.contrib.auth.models import User
 from .models import Patient
-
+# from django.contrib.auth.forms import AuthenticationForm
+from django.contrib import messages
 
 class PatientRegistrationForm(UserCreationForm):
     first_name = forms.CharField(
@@ -23,8 +24,10 @@ class PatientRegistrationForm(UserCreationForm):
 
     def save(self, commit=True):
         patient = super().save(commit=False)
+        patient.is_active = False
         patient.user_type = 'Patient'
         if commit:
+
             patient.save()
 
             image = self.cleaned_data.get('image')
@@ -42,3 +45,8 @@ class PatientRegistrationForm(UserCreationForm):
                     'appearance-none block w-full bg-gray-100 border border-gray-300 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500'
                 )
             })
+
+# class CustomAuthenticationForm(AuthenticationForm):
+#     def confirm_login_allowed(self, user):
+#         if not user.is_active:
+#             raise forms.ValidationError("This account is inactive. Please activate it to log in.")

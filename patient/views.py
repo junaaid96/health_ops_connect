@@ -7,6 +7,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import login
 from .forms import PatientRegistrationForm
 from appointment.models import Appointment
+from django.contrib.auth.models import User
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+from django.http import HttpResponse
 
 
 class PatientRegistrationView(FormView):
@@ -15,10 +22,48 @@ class PatientRegistrationView(FormView):
     success_url = reverse_lazy('patient_login')
 
     def form_valid(self, form):
-        doctor = form.save()
-        messages.success(self.request, 'Account created successfully!')
-        login(self.request, doctor)
+        user = form.save()
+        messages.success(
+            self.request, 'Account created. Check your email to activate your account.')
+
+        # send email to user to activate account
+        token = default_token_generator.make_token(user)
+        print("token: ", token)
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        print("uid: ", uid)
+
+        confirmation_url = f"http://127.0.0.1:3000/patients/activate/{uid}/{token}/"
+
+        mail_subject = "Activate Your Account"
+        mail_body = render_to_string('email/activation_email.html', {
+            'user': user,
+            'confirmation_url': confirmation_url
+        })
+        email = EmailMultiAlternatives(
+            mail_subject, '', to=[user.email])
+        email.attach_alternative(mail_body, "text/html")
+        email.send()
+
         return super().form_valid(form)
+    
+    def activate_account(self, uid64, token):
+        try:
+            uid = urlsafe_base64_decode(uid64).decode()
+            user = User.objects.get(pk=uid)
+        except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+        if user is not None and default_token_generator.check_token(user, token):
+            user.is_active = True
+            user.save()
+            # messages.success(request, 'Account activated successfully. You can now login.')
+            return redirect('patient_login')
+        else:
+            # messages.error(request, 'Activation link is invalid or has expired.')
+            return HttpResponse('Activation link is invalid or has expired.')
+    
+    def form_invalid(self, form):
+        messages.error(self.request, 'Account creation failed. Please correct the errors below.')
+        return super().form_invalid(form)
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:  # check if user is logged in when trying to access the registration page
