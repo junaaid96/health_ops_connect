@@ -23,6 +23,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', DoctorListView.as_view(), name='home'),
+    path('specialization/<slug:specialization>/',
+         DoctorListView.as_view(), name='filter_doctor'),
     path('doctors/', include('doctor.urls')),
     path('patients/', include('patient.urls')),
     path('appointments/', include('appointment.urls')),

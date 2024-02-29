@@ -20,9 +20,12 @@
     </div>
 
     <!-- Content -->
-    {% block content %} {% endblock %}
+    <div class="min-h-screen">
+        {% block content %} {% endblock %}
+    </div>
 
     <!-- Footer -->
+    {% include 'footer.html' %}
 </body>
 
 </html>
