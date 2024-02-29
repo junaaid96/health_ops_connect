@@ -1,7 +1,8 @@
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.contrib.auth.models import User
-from .models import Doctor, Designation, Specialization, AvailableTime
+from .models import Doctor, Designation, Specialization, AvailableTime, Review
+from health_ops_connect.constants import STAR_CHOICES
 
 
 class DoctorRegistrationForm(UserCreationForm):
@@ -63,3 +64,9 @@ class DoctorRegistrationForm(UserCreationForm):
                     'appearance-none block w-full bg-gray-100 border border-gray-300 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500'
                 )
             })
+
+
+# class DoctorReviewForm(forms.ModelForm):
+#     class Meta:
+#         model = Review
+#         fields = ['body', 'rating']

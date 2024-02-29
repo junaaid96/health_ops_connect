@@ -1,11 +1,12 @@
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib import messages
-from django.views.generic import FormView, ListView
+from django.views.generic import FormView, ListView, DetailView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import login
 from .forms import DoctorRegistrationForm
+from .models import Doctor, Review
 from appointment.models import Appointment
 
 
@@ -68,3 +69,40 @@ def change_appointment_status(request, pk):
 
 class DoctorLogoutView(LogoutView):
     next_page = 'doctor_login'
+
+
+class DoctorDetailsView(DetailView):
+    model = Doctor
+    template_name = 'doctor_details.html'
+    context_object_name = 'doctor'
+    # form_class = DoctorReviewForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['reviews'] = Review.objects.filter(doctor=self.object)
+        context['doctor'] = self.object
+        if self.request.user.is_authenticated:
+            if hasattr(self.request.user, 'patient'):
+                appointment = Appointment.objects.filter(
+                    patient=self.request.user.patient, doctor=self.object).first()
+                context['appointment'] = appointment
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(
+                request, 'You need to be logged in to add a review.')
+            return redirect('patient_login')
+        if Appointment.objects.filter(patient=request.user.patient, doctor=self.kwargs['pk']).exists():
+            doctor = Doctor.objects.get(pk=self.kwargs['pk'])
+            patient = request.user.patient
+            body = request.POST['body']
+            rating = request.POST['rating']
+            Review.objects.create(
+                reviewer=patient, doctor=doctor, body=body, rating=rating)
+            messages.success(request, 'Review added successfully')
+            return redirect('doctor_details', pk=self.kwargs['pk'])
+        else:
+            messages.error(
+                request, 'You can only review doctors you have appointments with.')
+            return redirect('patient_login')

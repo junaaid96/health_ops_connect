@@ -25,6 +25,7 @@ urlpatterns = [
     path('', DoctorListView.as_view(), name='home'),
     path('doctors/', include('doctor.urls')),
     path('patients/', include('patient.urls')),
+    path('appointments/', include('appointment.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

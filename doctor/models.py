@@ -41,6 +41,9 @@ class Doctor(models.Model):
     user_type = models.CharField(
         default='Doctor', max_length=10, editable=False)
 
+    def get_appointment_time_choices(self):
+        return [(time.id, time.time_slot) for time in self.available_time.all()]
+
     def __str__(self):
         return f"Dr. {self.user.first_name} {self.user.last_name}"
 
@@ -51,6 +54,10 @@ class Review(models.Model):
     body = models.TextField()
     rating = models.CharField(choices=STAR_CHOICES, max_length=5)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        # unique_together = ['reviewer', 'doctor']
+        ordering = ['-created_at']
 
     def __str__(self):
         return f"Patient: {self.reviewer.user.first_name} {self.reviewer.user.last_name} - Doctor: {self.doctor.user.first_name} {self.doctor.user.last_name} - Rating: {self.rating}"
