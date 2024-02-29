@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib import messages
@@ -8,6 +9,10 @@ from django.contrib.auth import login
 from .forms import DoctorRegistrationForm
 from .models import Doctor, Review
 from appointment.models import Appointment
+from patient.models import Patient
+from patient.forms import PatientProfileUpdateForm
+from django.views import View
+from django.shortcuts import render
 
 
 class DoctorRegistrationView(FormView):
@@ -106,3 +111,24 @@ class DoctorDetailsView(DetailView):
             messages.error(
                 request, 'You can only review doctors you have appointments with.')
             return redirect('patient_login')
+
+
+class PatientProfileUpdateView(View):
+    template_name = 'patient_details.html'
+
+    def get(self, request, patient_username):
+        patient = get_object_or_404(Patient, user__username=patient_username)
+        form = PatientProfileUpdateForm(instance=patient)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, patient_username):
+        patient = get_object_or_404(Patient, user__username=patient_username)
+        form = PatientProfileUpdateForm(
+            request.POST, request.FILES, instance=patient)
+        if form.is_valid():
+            # Associate the correct User instance with the patient
+            form.instance.user = patient.user
+            form.save()
+            messages.success(request, 'Profile updated successfully')
+            return redirect('doctor_profile')
+        return render(request, self.template_name, {'form': form})

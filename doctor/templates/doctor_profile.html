@@ -25,7 +25,10 @@
                 {% for appointment in appointments %}
                 <tr>
                     <td class="border px-4 py-2">{{ appointment.id }}</td>
-                    <td class="border px-4 py-2">{{ appointment.patient }}</td>
+                    <td class="border px-4 py-2">
+                        <a href="{% url 'patient_profile_update' appointment.patient.user.username %}" class="text-blue-400 hover:text-blue-500 hover:underline">
+                            {{ appointment.patient }}</a>
+                    </td>
                     <td class="border px-4 py-2">{{ appointment.doctor }}</td>
                     <td class="border px-4 py-2">{{ appointment.get_appointment_type_display }}</td>
                     <td class="border px-4 py-2">
