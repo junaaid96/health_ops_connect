@@ -13,6 +13,7 @@ from patient.models import Patient
 from patient.forms import PatientProfileUpdateForm
 from django.views import View
 from django.shortcuts import render
+from django.http import HttpResponse
 
 
 class DoctorRegistrationView(FormView):
@@ -113,10 +114,13 @@ class DoctorDetailsView(DetailView):
             return redirect('patient_login')
 
 
-class PatientProfileUpdateView(View):
+class PatientProfileUpdateView(LoginRequiredMixin, View):
     template_name = 'patient_details.html'
 
     def get(self, request, patient_username):
+        if not hasattr(request.user, 'doctor'):
+            return HttpResponse("Only doctor can update any patient's profile.")
+
         patient = get_object_or_404(Patient, user__username=patient_username)
         form = PatientProfileUpdateForm(instance=patient)
         return render(request, self.template_name, {'form': form})
