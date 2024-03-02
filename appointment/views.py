@@ -31,19 +31,18 @@ class AppointmentCreateView(LoginRequiredMixin, CreateView):
         return Doctor.objects.get(id=self.kwargs['doctor_id'])
 
     def form_valid(self, form):
-        patient = hasattr(self.request.user,
-                          'patient') and self.request.user.patient
-        print(patient)
+        patient = Patient.objects.get(user=self.request.user)
 
-        if patient is None:
+        if hasattr(self.request.user, 'doctor'):
             return HttpResponse('You are not a patient', status=400)
 
-        if patient.appointment_set.filter(appointment_time=form.instance.appointment_time).exists() and Appointment.objects.filter(appointment_status='Pending').exists():
+        if patient.appointment_set.filter(appointment_time=form.instance.appointment_time).exists() and patient.appointment_set.filter(appointment_status='Pending').exists():
             messages.error(
                 self.request, 'You already have an appointment at this time!')
             return super().form_invalid(form)
 
         form.instance.patient = patient
+        messages.success(self.request, 'Appointment taken successfully!')
         return super().form_valid(form)
 
     def get_success_url(self):
