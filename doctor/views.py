@@ -14,6 +14,8 @@ from patient.forms import PatientProfileUpdateForm
 from django.views import View
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 
 
 class DoctorRegistrationView(FormView):
@@ -68,6 +70,18 @@ def change_appointment_status(request, pk):
     if request.method == "POST":
         appointment.appointment_status = request.POST['status']
         appointment.save()
+
+        mail_subject = f"Your Appointment is {appointment.appointment_status}!"
+        mail_body = render_to_string('email/appointment_status_email.html', {
+            'patient': appointment.patient,
+            'doctor': appointment.doctor,
+            'appointment': appointment
+        })
+        email = EmailMultiAlternatives(
+            mail_subject, '', to=[appointment.patient.user.email])
+        email.attach_alternative(mail_body, "text/html")
+        email.send()
+
         messages.success(request, 'Appointment status updated successfully')
         return redirect('doctor_profile')
     return redirect('doctor_profile')
