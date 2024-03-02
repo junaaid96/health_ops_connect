@@ -17,6 +17,11 @@ class AppointmentCreateView(LoginRequiredMixin, CreateView):
     form_class = AppointmentForm
     template_name = 'take_appointment.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        if hasattr(request.user, 'doctor'):
+            return HttpResponse('You are not allowed to take appointment as a doctor!')
+        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['doctor'] = self.get_doctor()
@@ -32,9 +37,6 @@ class AppointmentCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         patient = Patient.objects.get(user=self.request.user)
-
-        if hasattr(self.request.user, 'doctor'):
-            return HttpResponse('You are not a patient', status=400)
 
         if patient.appointment_set.filter(appointment_time=form.instance.appointment_time).exists() and patient.appointment_set.filter(appointment_status='Pending').exists():
             messages.error(
