@@ -38,7 +38,11 @@ class AppointmentCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         patient = Patient.objects.get(user=self.request.user)
 
-        if patient.appointment_set.filter(appointment_time=form.instance.appointment_time).exists() and patient.appointment_set.filter(appointment_status='Pending').exists():
+        if Appointment.objects.filter(
+            patient=patient,
+            appointment_time=form.instance.appointment_time,
+            appointment_status='Pending'
+        ).exists():
             messages.error(
                 self.request, 'You already have an appointment at this time!')
             return super().form_invalid(form)
