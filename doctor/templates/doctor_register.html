@@ -99,11 +99,11 @@
                     {% endfor %} {% endif %}
                 </div>
                 <div class="block text-gray-700 font-bold mb-2">
-                    <label class="block text-gray-700 font-bold mb-2" for="{{ form.specialization.id_for_label }}">
-                        {{ form.specialization.label }}
-                    </label> {{ form.specialization }}
-                    {% if form.specialization.errors %}
-                    {% for error in form.specialization.errors %}
+                    <label class="block text-gray-700 font-bold mb-2" for="{{ form.expertise.id_for_label }}">
+                        {{ form.expertise.label }}
+                    </label> {{ form.expertise }}
+                    {% if form.expertise.errors %}
+                    {% for error in form.expertise.errors %}
                     <p class="text-red-600 text-sm italic">{{ error }}</p>
                     {% endfor %} {% endif %}
                 </div>

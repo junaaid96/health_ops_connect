@@ -1,5 +1,5 @@
 from django.views.generic import ListView
-from doctor.models import Doctor, Specialization
+from doctor.models import Doctor, Expertise
 
 
 class DoctorListView(ListView):
@@ -8,16 +8,16 @@ class DoctorListView(ListView):
     context_object_name = 'doctors'
 
     def get_queryset(self):
-        specialization_slug = self.kwargs.get('specialization')
-        if specialization_slug:
-            specialization = Specialization.objects.get(
-                slug=specialization_slug)
-            return Doctor.objects.filter(specialization=specialization)
+        expertise_slug = self.kwargs.get('expertise')
+        if expertise_slug:
+            expertise = Expertise.objects.get(
+                slug=expertise_slug)
+            return Doctor.objects.filter(expertise=expertise)
         return Doctor.objects.all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['specializations'] = Specialization.objects.all()
+        context['expertises'] = Expertise.objects.all()
         return context
 
 

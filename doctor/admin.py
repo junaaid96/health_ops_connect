@@ -1,10 +1,10 @@
 from django.contrib import admin
-from .models import Specialization, Designation, AvailableTime, Doctor, Review
+from .models import Expertise, Designation, AvailableTime, Doctor, Review
 
 # Register your models here.
 
 
-class SpecializationAdmin(admin.ModelAdmin):
+class ExpertiseAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
 
 
@@ -14,7 +14,7 @@ class DesignationAdmin(admin.ModelAdmin):
 
 class DoctorAdmin(admin.ModelAdmin):
     list_display = ('id', 'full_name', 'fee')
-    list_filter = ('specialization', 'designation', 'available_time')
+    list_filter = ('expertise', 'designation', 'available_time')
     search_fields = ('user__username', 'user__first_name',
                      'user__last_name')
 
@@ -28,7 +28,7 @@ class ReviewAdmin(admin.ModelAdmin):
     search_fields = ('reviewer', 'doctor', 'rating', 'created_at')
 
 
-admin.site.register(Specialization, SpecializationAdmin)
+admin.site.register(Expertise, ExpertiseAdmin)
 admin.site.register(Designation, DesignationAdmin)
 admin.site.register(AvailableTime)
 admin.site.register(Doctor, DoctorAdmin)

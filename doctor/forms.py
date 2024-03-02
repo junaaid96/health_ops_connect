@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.contrib.auth.models import User
-from .models import Doctor, Designation, Specialization, AvailableTime, Review
+from .models import Doctor, Designation, Expertise, AvailableTime, Review
 from health_ops_connect.constants import STAR_CHOICES
 
 
@@ -16,8 +16,8 @@ class DoctorRegistrationForm(UserCreationForm):
     image = forms.ImageField(required=True)
     designation = forms.ModelMultipleChoiceField(
         queryset=Designation.objects.all(), required=True)
-    specialization = forms.ModelMultipleChoiceField(
-        queryset=Specialization.objects.all(), required=True)
+    expertise = forms.ModelMultipleChoiceField(
+        queryset=Expertise.objects.all(), required=True)
     available_time = forms.ModelMultipleChoiceField(
         queryset=AvailableTime.objects.all(), required=True)
     fee = forms.IntegerField(required=True)
@@ -26,7 +26,7 @@ class DoctorRegistrationForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'email', 'password1',
-                  'password2', 'image', 'designation', 'specialization', 'available_time', 'fee', 'meet_link']
+                  'password2', 'image', 'designation', 'expertise', 'available_time', 'fee', 'meet_link']
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -42,14 +42,14 @@ class DoctorRegistrationForm(UserCreationForm):
                                            fee=fee, meet_link=meet_link)
 
             designation = self.cleaned_data.get('designation')
-            specialization = self.cleaned_data.get('specialization')
+            expertise = self.cleaned_data.get('expertise')
             available_time = self.cleaned_data.get('available_time')
 
             if designation:
                 doctor.designation.set(designation)
 
-            if specialization:
-                doctor.specialization.set(specialization)
+            if expertise:
+                doctor.expertise.set(expertise)
 
             if available_time:
                 doctor.available_time.set(available_time)

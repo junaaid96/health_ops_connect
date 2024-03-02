@@ -15,12 +15,14 @@
                 {{ designation.name }}{% if not forloop.last %}, {% endif %}
                 {% endfor %}
             </p>
-            <p class="text-gray-700 mb-4"><strong>Specializations:</strong>
-                {% for specialization in doctor.specialization.all %}
-                {{ specialization.name }}{% if not forloop.last %}, {% endif %}
+            <p class="text-gray-700 mb-4"><strong>Expertise:</strong>
+                {% for expertise in doctor.expertise.all %}
+                {{ expertise.name }}{% if not forloop.last %}, {% endif %}
                 {% endfor %}
             </p>
             <p class="text-gray-700 mb-4"><strong>Fee:</strong> ${{ doctor.fee }}</p>
+            <a class="inline-block font-medium text-sm px-4 py-2 leading-none bg-blue-400 rounded text-white hover:border-transparent hover:bg-blue-500 mt-2 lg:mt-0"
+                href="{% url 'take_appointment' doctor.id %}">Take Appointment</a>
         </div>
     </div>
 
@@ -30,14 +32,14 @@
         <div class="w-full">
             {% for review in reviews %}
             <div class="bg-gray-100 p-6 rounded-lg shadow-md mb-5">
-                <h3 class="text-xl font-bold mb-2">{{ review.reviewer.user.first_name }} 
+                <h3 class="text-xl font-bold mb-2">{{ review.reviewer.user.first_name }}
                     {{review.reviewer.user.last_name }}</h3>
                 <p class="text-gray-700 mb-4"><strong>Rating:</strong> {{ review.rating }}</p>
                 <p class="text-gray-700 mb-4">{{ review.body }}</p>
             </div>
             {% endfor %}
             {% if request.user.is_authenticated %}
-            {% if request.user.patient == appointment.patient and doctor == appointment.doctor %}   
+            {% if request.user.patient == appointment.patient and doctor == appointment.doctor %}
             <div class="bg-gray-100 p-6 rounded-lg shadow-md">
                 <h3 class="text-xl font-bold mb-2">Post a Review</h3>
                 <form method="post" action="" class="space-y-4">

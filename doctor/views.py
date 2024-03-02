@@ -130,7 +130,6 @@ class PatientProfileUpdateView(LoginRequiredMixin, View):
         form = PatientProfileUpdateForm(
             request.POST, request.FILES, instance=patient)
         if form.is_valid():
-            # Associate the correct User instance with the patient
             form.instance.user = patient.user
             form.save()
             messages.success(request, 'Profile updated successfully')

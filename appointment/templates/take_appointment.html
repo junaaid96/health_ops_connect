@@ -14,11 +14,12 @@
         <label class="block text-gray-700 font-bold mb-2" for="{{ form.doctor.id_for_label }}">
             {{ form.doctor.label }}
         </label>
-        {{ form.doctor }}
+        <p class="font-bold text-blue-500">Dr. {{doctor.user.first_name}} {{doctor.user.last_name}}</p>
+        <input type="hidden" name="doctor" value="{{ doctor.id }}">
         {% if form.doctor.errors %}
-        {% for error in form.doctor.errors %}
-        <p class="text-red-600 text-sm italic">{{ error }}</p>
-        {% endfor %}
+            {% for error in form.doctor.errors %}
+                <p class="text-red-600 text-sm italic">{{ error }}</p>
+            {% endfor %}
         {% endif %}
         
         <label class="block text-gray-700 font-bold mb-2" for="{{ form.appointment_type.id_for_label }}">

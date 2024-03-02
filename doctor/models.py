@@ -6,7 +6,7 @@ from health_ops_connect.constants import STAR_CHOICES
 # Create your models here.
 
 
-class Specialization(models.Model):
+class Expertise(models.Model):
     name = models.CharField(max_length=50)
     slug = models.SlugField(max_length=100, unique=True)
 
@@ -34,15 +34,12 @@ class Doctor(models.Model):
     image = models.ImageField(
         upload_to='doctor/media/uploads/', default='doctor/media/uploads/default.jpg')
     designation = models.ManyToManyField(Designation)
-    specialization = models.ManyToManyField(Specialization)
+    expertise = models.ManyToManyField(Expertise)
     available_time = models.ManyToManyField(AvailableTime)
     fee = models.IntegerField()
     meet_link = models.URLField(max_length=200)
     user_type = models.CharField(
         default='Doctor', max_length=10, editable=False)
-
-    def get_appointment_time_choices(self):
-        return [(time.id, time.time_slot) for time in self.available_time.all()]
 
     def __str__(self):
         return f"Dr. {self.user.first_name} {self.user.last_name}"
