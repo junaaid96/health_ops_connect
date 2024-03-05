@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,7 +9,9 @@
     <meta name="description" content="healthOPS Connect" />
     <title>{% block title %} {% endblock %}</title>
     <!-- Tailwind CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.0.1/dist/tailwind.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
 </head>
 
 <body>
@@ -15,14 +19,10 @@
     {% include 'navbar.html' %}
 
     <!-- Showing Messages -->
-    <div class="w-1/2 m-auto">
-        {% include 'messages.html' %}
-    </div>
+    <div class="w-1/2 m-auto">{% include 'messages.html' %}</div>
 
     <!-- Content -->
-    <div class="min-h-screen">
-        {% block content %} {% endblock %}
-    </div>
+    <div class="min-h-screen">{% block content %} {% endblock %}</div>
 
     <!-- Footer -->
     {% include 'footer.html' %}

@@ -3,9 +3,30 @@
 {% block title %}Doctor Profile{% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8">
-    <h1 class="text-2xl font-bold mb-4">Appointments</h1>
-    <p class="mb-4">Total Appointments: {{ appointments.count }}</p>
+<div class="container mx-auto px-4 py-8 text-center">
+    <div class="flex justify-between w-10/12 m-auto mb-4">
+        <div>
+            <h1 class="text-2xl font-bold mb-4">Profile</h1>
+            <img src="{{ user.doctor.image.url }}" alt="{{ user.get_full_name }}"
+                class="rounded-full h-24 w-24 mb-4 m-auto" />
+            <p>Name: {{ user.get_full_name }}</p>
+            <p>{% for designation in user.doctor.designation.all %}
+                {{ designation.name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}</p>
+            <p>Email: {{ user.email }}</p>
+        </div>
+    
+        <div>
+            <h1 class="text-2xl font-bold mb-4">Appointments</h1>
+            <p class="mb-4">Total Appointments: {{ appointments.count }}</p>
+            <div class="mb-4">
+                <p class="text-yellow-500">Pending: {{pending}}</p>
+                <p class="text-green-500">Running: {{running}}</p>
+                <p class="text-blue-500">Completed: {{completed}}</p>
+                <p class="text-red-500">Cancelled: {{cancelled}}</p>
+            </div>
+        </div>
+    </div>
 
     <div class="overflow-x-auto">
         <table class="table-auto border-collapse border border-gray-400 w-full">
@@ -26,7 +47,8 @@
                 <tr>
                     <td class="border px-4 py-2">{{ appointment.id }}</td>
                     <td class="border px-4 py-2">
-                        <a href="{% url 'patient_profile_update' appointment.patient.user.username %}" class="text-blue-400 hover:text-blue-500 hover:underline">
+                        <a href="{% url 'patient_profile_update' appointment.patient.user.username %}"
+                            class="text-blue-400 hover:text-blue-500 hover:underline">
                             {{ appointment.patient }}</a>
                     </td>
                     <td class="border px-4 py-2">{{ appointment.doctor }}</td>

@@ -62,6 +62,19 @@ class DoctorProfileView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Appointment.objects.filter(doctor=self.request.user.doctor)
 
+    # count of pending, completed, cancelled and running appointments
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pending'] = Appointment.objects.filter(
+            doctor=self.request.user.doctor, appointment_status='Pending').count()
+        context['completed'] = Appointment.objects.filter(
+            doctor=self.request.user.doctor, appointment_status='Completed').count()
+        context['cancelled'] = Appointment.objects.filter(
+            doctor=self.request.user.doctor, appointment_status='Cancelled').count()
+        context['running'] = Appointment.objects.filter(
+            doctor=self.request.user.doctor, appointment_status='Running').count()
+        return context
+
 # doctor can change patient's appointment status
 
 

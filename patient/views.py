@@ -32,7 +32,8 @@ class PatientRegistrationView(FormView):
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         print("uid: ", uid)
 
-        confirmation_url = f"https://health-ops-connect-mvt.onrender.com/patients/activate/{uid}/{token}/"
+        confirmation_url = f"https://health-ops-connect-mvt.onrender.com/patients/activate/{
+            uid}/{token}/"
 
         mail_subject = "Activate Your Account"
         mail_body = render_to_string('email/activation_email.html', {
@@ -45,12 +46,12 @@ class PatientRegistrationView(FormView):
         email.send()
 
         return super().form_valid(form)
-    
+
     def activate_account(self, uid64, token):
         try:
             uid = urlsafe_base64_decode(uid64).decode()
             user = User.objects.get(pk=uid)
-        except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
             user = None
         if user is not None and default_token_generator.check_token(user, token):
             user.is_active = True
@@ -60,9 +61,10 @@ class PatientRegistrationView(FormView):
         else:
             # messages.error(request, 'Activation link is invalid or has expired.')
             return HttpResponse('Activation link is invalid or has expired.')
-    
+
     def form_invalid(self, form):
-        messages.error(self.request, 'Account creation failed. Please correct the errors below.')
+        messages.error(
+            self.request, 'Account creation failed. Please correct the errors below.')
         return super().form_invalid(form)
 
     def dispatch(self, request, *args, **kwargs):
@@ -94,6 +96,12 @@ class PatientProfileView(LoginRequiredMixin, ListView):
     model = Appointment
     template_name = 'patient_profile.html'
     context_object_name = 'appointments'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['completed'] = Appointment.objects.filter(
+            patient=self.request.user.patient, appointment_status='Completed').count()
+        return context
 
     def get_queryset(self):
         return Appointment.objects.filter(patient=self.request.user.patient)

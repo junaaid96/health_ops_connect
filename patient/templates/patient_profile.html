@@ -6,11 +6,10 @@
 <div class="container mx-auto px-4 py-8 text-center">
     <h1 class="text-2xl font-bold mb-4">Profile</h1>
     <img src="{{ user.patient.image.url }}" alt="{{ user.get_full_name }}" class="rounded-full h-24 w-24 mb-4 m-auto" />
-    <p class="mb-4">Name: {{ user.get_full_name }}</p>
-    <p class="mb-4">Email: {{ user.email }}</p>
-    <p class="mb-4">Phone: {{ user.patient.phone }}</p>
-    <h1 class="text-2xl font-bold mb-4">Appointments</h1>
-    <p class="mb-4">Total Appointments: {{ appointments.count }}</p>
+    <p>Name: {{ user.get_full_name }}</p>
+    <p>Email: {{ user.email }}</p>
+    <p>Phone: {{ user.patient.phone }}</p>
+    <p class="mb-4">Appointment Completed: {{ completed }}</p>
 
     <div class="overflow-x-auto">
         <table class="table-auto border-collapse border border-gray-400 w-full">
