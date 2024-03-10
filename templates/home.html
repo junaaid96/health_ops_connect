@@ -6,19 +6,17 @@
 
 {% block content %}
 <!-- header -->
-<div class="relative">
-    <div class="absolute top-0 left-0 w-full text-center mt-16">
-        <div class="w-1/2 mx-auto">
-            <p class="lg:text-xl mb-4 text-blue-500">Welcome to our hospital management system!</p>
-            <h1 class="lg:text-4xl font-bold">We Take Care Our Patients' Health</h1>
-        </div>
-    </div>
-    <div class="w-10/12 m-auto opacity-25 lg:opacity-100">
-        <img src="{% static 'images/cover.jpg' %}" alt="cover">
+<div id="cover" class="m-auto mt-10 rounded-2xl" style="background-image: url('{% static "images/cover.jpg" %}');">
+    <div class="w-1/2 mx-auto">
+        <p class="lg:text-xl mb-4 text-blue-200">Welcome To Our Hospital Management System</p>
+        <h1 class="lg:text-4xl font-bold mb-4">We Take Care <br> Our Patients' Health</h1>
+        <a class="inline-block font-medium text-sm px-4 py-3 leading-none bg-blue-700 rounded text-white hover:border-transparent hover:bg-blue-800 mt-2 lg:mt-0" href="{% url "patient_login" %}">Get Started</a>
     </div>
 </div>
 
+
 <!-- features -->
+<h2 class="text-3xl font-bold mt-10 text-center">Features</h2>
 <div class="flex flex-wrap gap-10 my-10 justify-center items-center">
     <div class="bg-gray-100 rounded-lg shadow-md p-6 w-96">
         <img src="{% static 'icons/customer-care.svg' %}" alt="icon" class="w-24 mx-auto mb-4">
@@ -41,26 +39,27 @@
 
 
 
-<!-- filter doctors by expertise -->
-<div class="m-5">
-    <div class="flex gap-4 justify-center">
-        <div class="mb-5">
-            <select name="specialization" onchange="window.location.href=this.value"
-                class="py-2 px-4 rounded-lg border border-gray-300">
-                <option value="" disabled selected>Select Expertise</option>
-                <option value="{% url 'home' %}">All</option>
-                {% for expertise in expertises %}
-                <option value="{% url 'filter_doctor' expertise.slug %}">
-                    {{ expertise.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-    </div>
-
+<div class="m-20">
     <!-- All doctors -->
-    <div>
-        <h2 class="text-2xl font-bold mb-2">Doctors</h2>
-        <p class="mb-2">Total Doctors Found: {{ doctors | length }}</p>
+    <div class="text-center">
+        <h2 class="text-3xl font-bold mb-3">Available Doctors</h2>
+        
+        <!-- filter doctors by expertise -->
+        <div class="flex gap-4 justify-center">
+            <div class="mb-5">
+                <select name="specialization" onchange="window.location.href=this.value"
+                    class="py-2 px-4 rounded-lg border border-gray-300">
+                    <option value="" disabled selected>Select Expertise</option>
+                    <option value="{% url 'home' %}">All</option>
+                    {% for expertise in expertises %}
+                    <option value="{% url 'filter_doctor' expertise.slug %}">
+                        {{ expertise.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <p class="mb-5">Total Doctors Found: {{ doctors | length }}</p>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {% for doctor in doctors %}
             <div class="bg-blue-50 p-6 rounded-lg shadow-md text-center">
@@ -80,26 +79,26 @@
             {% endfor %}
         </div>
     </div>
+</div>
 
-    <!-- blog -->
-    <div class="bg-white rounded-lg shadow-md p-6 my-10">
-        <h2 class="text-3xl font-bold mb-4">Our Blog</h2>
-        <div class="flex flex-col gap-4">
-            <div class="bg-gray-100 rounded-lg shadow-md p-4">
-                <h3 class="text-xl font-bold mb-2">5 Tips for a Healthy Lifestyle</h3>
-                <p>Here are five simple tips to help you maintain a healthy lifestyle and improve your overall
-                    well-being.</p>
-            </div>
-            <div class="bg-gray-100 rounded-lg shadow-md p-4">
-                <h3 class="text-xl font-bold mb-2">The Importance of Regular Exercise</h3>
-                <p>Learn about the importance of regular exercise and how it can benefit your physical and mental
-                    health.</p>
-            </div>
-            <div class="bg-gray-100 rounded-lg shadow-md p-4">
-                <h3 class="text-xl font-bold mb-2">Healthy Eating Habits</h3>
-                <p>Discover some healthy eating habits that can help you maintain a balanced diet and support your
-                    overall health.</p>
-            </div>
+<!-- blog -->
+<div class="bg-white rounded-lg shadow-md p-6 my-10">
+    <h2 class="text-3xl font-bold mb-4 text-center">Our Blog</h2>
+    <div class="flex flex-wrap gap-10 my-10 justify-center items-center">
+        <div class="bg-gray-100 rounded-lg shadow-md p-4">
+            <h3 class="text-xl font-bold mb-2">5 Tips for a Healthy Lifestyle</h3>
+            <p>Here are five simple tips to help you maintain a healthy lifestyle and improve your overall
+                well-being.</p>
+        </div>
+        <div class="bg-gray-100 rounded-lg shadow-md p-4">
+            <h3 class="text-xl font-bold mb-2">The Importance of Regular Exercise</h3>
+            <p>Learn about the importance of regular exercise and how it can benefit your physical and mental
+                health.</p>
+        </div>
+        <div class="bg-gray-100 rounded-lg shadow-md p-4">
+            <h3 class="text-xl font-bold mb-2">Healthy Eating Habits</h3>
+            <p>Discover some healthy eating habits that can help you maintain a balanced diet and support your
+                overall health.</p>
         </div>
     </div>
 </div>

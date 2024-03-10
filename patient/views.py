@@ -12,7 +12,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
-from django.contrib.auth.tokens import default_token_generator
+from rest_framework.authtoken.models import Token
 from django.http import HttpResponse
 
 
@@ -26,14 +26,14 @@ class PatientRegistrationView(FormView):
         messages.success(
             self.request, 'Account created. Check your email to activate your account.')
 
-        # send email to user to activate account
-        token = default_token_generator.make_token(user)
-        print("token: ", token)
+        token = Token.objects.create(user=user)
+        print("token: ", token.key)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         print("uid: ", uid)
 
         confirmation_url = f"https://health-ops-connect-mvt.onrender.com/patients/activate/{uid}/{token}/"
 
+        # send email to user to activate account
         mail_subject = "Activate Your Account"
         mail_body = render_to_string('email/activation_email.html', {
             'user': user,
@@ -52,13 +52,11 @@ class PatientRegistrationView(FormView):
             user = User.objects.get(pk=uid)
         except (TypeError, ValueError, OverflowError, User.DoesNotExist):
             user = None
-        if user is not None and default_token_generator.check_token(user, token):
+        if user is not None and Token.objects.get(user=user).key == token:
             user.is_active = True
             user.save()
-            # messages.success(request, 'Account activated successfully. You can now login.')
             return redirect('activation_success')
         else:
-            # messages.error(request, 'Activation link is invalid or has expired.')
             return HttpResponse('Activation link is invalid or has expired.')
 
     def form_invalid(self, form):
