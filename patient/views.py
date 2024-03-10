@@ -32,7 +32,8 @@ class PatientRegistrationView(FormView):
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         print("uid: ", uid)
 
-        confirmation_url = f"https://health-ops-connect-mvt.onrender.com/patients/activate/{uid}/{token}/"
+        confirmation_url = f"https://health-ops-connect-mvt.onrender.com/patients/activate/{
+            uid}/{token}/"
 
         mail_subject = "Activate Your Account"
         mail_body = render_to_string('email/activation_email.html', {
@@ -56,7 +57,7 @@ class PatientRegistrationView(FormView):
             user.is_active = True
             user.save()
             # messages.success(request, 'Account activated successfully. You can now login.')
-            return redirect('patient_login')
+            return redirect('activation_success')
         else:
             # messages.error(request, 'Activation link is invalid or has expired.')
             return HttpResponse('Activation link is invalid or has expired.')
@@ -70,6 +71,12 @@ class PatientRegistrationView(FormView):
         if request.user.is_authenticated:  # check if user is logged in when trying to access the registration page
             return redirect('patient_profile')  # redirect to profile page
         return super().dispatch(request, *args, **kwargs)
+
+
+class ActivationSuccessView(ListView):
+    template_name = 'activation_success.html'
+    model = User
+    context_object_name = 'user'
 
 
 class PatientLoginView(LoginView):

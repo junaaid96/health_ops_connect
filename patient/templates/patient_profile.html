@@ -54,12 +54,12 @@
                         {% if appointment.appointment_status == 'Pending' %}
                         <form action="{% url 'cancel_appointment' appointment.id %}" method="post">
                             {% csrf_token %}
-                            <button type="submit" class="bg-red-400 hover:bg-red-500 text-white px-2 rounded">
+                            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-2 rounded">
                                 ✗
                             </button>
                         </form>
                         {% else %}
-                        <button class="bg-gray-400 text-white px-2 rounded" disabled>
+                        <button class="bg-gray-400 text-white px-2 rounded cursor-not-allowed" disabled>
                             ✗
                         </button>
                         {% endif %}
