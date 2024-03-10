@@ -32,8 +32,7 @@ class PatientRegistrationView(FormView):
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         print("uid: ", uid)
 
-        confirmation_url = f"https://health-ops-connect-mvt.onrender.com/patients/activate/{
-            uid}/{token}/"
+        confirmation_url = f"https://health-ops-connect-mvt.onrender.com/patients/activate/{uid}/{token}/"
 
         mail_subject = "Activate Your Account"
         mail_body = render_to_string('email/activation_email.html', {
