@@ -31,4 +31,4 @@ This project implements a system for managing patient appointments, doctor profi
 
 ## Technologies Used
 
-- Python, Django, SQLite based on default MVT pattern.
+- HTML, CSS, Python, Django, SQLite based on default MVT pattern.
