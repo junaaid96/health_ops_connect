@@ -22,12 +22,13 @@ This project implements a system for managing patient appointments, doctor profi
 ### 3. Doctor Profile Page
 
 - Doctors have personalized profile pages displaying patient records associated with them.
-- Doctors can easily review and manage patient information, including editing and deleting records.
+- Doctors can easily approve or cancel appointments and review patient information, including editing and deleting records.
 
 ### 4. Data Display
 
 - The homepage showcases a list of doctors along with their names, images, expertise, and view details buttons.
 - Patients can view detailed information about doctors on a separate page.
+- Anyone can filter doctors by their expertise.
 
 ## Technologies Used
 
