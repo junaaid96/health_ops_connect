@@ -126,14 +126,21 @@ class DoctorDetailsView(DetailView):
             messages.error(
                 request, 'You need to be logged in to add a review.')
             return redirect('patient_login')
-        if Appointment.objects.filter(patient=request.user.patient, doctor=self.kwargs['pk']).exists():
+        if Appointment.objects.filter(patient=request.user.patient, doctor=self.kwargs['pk'], appointment_status='Completed').exists():
             doctor = Doctor.objects.get(pk=self.kwargs['pk'])
             patient = request.user.patient
             body = request.POST['body']
             rating = request.POST['rating']
-            Review.objects.create(
-                reviewer=patient, doctor=doctor, body=body, rating=rating)
-            messages.success(request, 'Review added successfully')
+
+            existing_review = Review.objects.filter(
+                reviewer=patient, doctor=doctor).exists()
+            if existing_review:
+                messages.error(
+                    request, 'You have already reviewed this doctor.')
+            else:
+                Review.objects.create(reviewer=patient, doctor=doctor,
+                                      body=body, rating=rating)
+                messages.success(request, 'Review added successfully')
             return redirect('doctor_details', pk=self.kwargs['pk'])
         else:
             messages.error(

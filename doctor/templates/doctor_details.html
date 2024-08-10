@@ -35,7 +35,7 @@
         <p class="text-gray-700 mb-4"><strong>Total Reviews:</strong> {{ reviews | length }}</p>
         <div class="w-full">
             {% if request.user.is_authenticated %}
-            {% if request.user.patient == appointment.patient and doctor == appointment.doctor %}
+            {% if request.user.patient == appointment.patient and doctor == appointment.doctor and appointment.appointment_status == 'Completed' %}
             <div class="bg-gray-100 p-6 rounded-lg shadow-md mb-5">
                 <h3 class="text-xl font-bold mb-2">Post a Review</h3>
                 <form method="post" action="" class="space-y-4">
